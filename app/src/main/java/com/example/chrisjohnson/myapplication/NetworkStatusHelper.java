@@ -12,6 +12,9 @@ public class NetworkStatusHelper {
     private boolean networkIsUp = false;
     private boolean wifiIsConnected = false;
     private boolean radioIsConnected = false;
+    private String wifiExtraInfo = "";
+    private String radioExtraInfo = "";
+    private boolean isRoaming = false;
 
     public NetworkStatusHelper(ConnectivityManager connMgr) {
         this.connMgr = connMgr;
@@ -39,12 +42,24 @@ public class NetworkStatusHelper {
         if (wifiInfo != null && wifiInfo.isConnected()) {
             // wifi is connected
             wifiIsConnected = true;
+            // get extra wifi info, if available
+            if (wifiInfo.getExtraInfo() != null) {
+                wifiExtraInfo = wifiInfo.getExtraInfo();
+            }
         }
+
         NetworkInfo radioInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         if (radioInfo != null && radioInfo.isConnected()) {
             // radio is connected
             radioIsConnected = true;
+            // get radio extra info, if available
+            if (radioInfo.getExtraInfo() != null) {
+                radioExtraInfo = radioInfo.getExtraInfo();
+            }
+            // get roaming info
+            isRoaming = radioInfo.isRoaming();
         }
+
     }
 
     public boolean IsNetworkUp() {
@@ -54,4 +69,10 @@ public class NetworkStatusHelper {
     public boolean IsWifiConnected() { return wifiIsConnected; }
 
     public boolean IsRadioConnected() { return radioIsConnected; }
+
+    public String GetRadioExtraInfo() { return radioExtraInfo; }
+
+    public String GetWifiExtraInfo() { return wifiExtraInfo; }
+
+    public boolean IsRoaming() { return isRoaming; }
 }

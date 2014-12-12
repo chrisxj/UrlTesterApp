@@ -63,6 +63,22 @@ public class ViewUrl extends Activity {
         if ( helper.IsRadioConnected()) {
             radioStatusText.setText(R.string.radio_status_up);
         }
+
+        // append extra info for Radio and Wifi interfaces, if available
+        if ( helper.GetWifiExtraInfo() != "") {
+            wifiStatusText.append(", " + helper.GetWifiExtraInfo());
+        }
+        if ( helper.GetRadioExtraInfo() != "") {
+            radioStatusText.append(", " + helper.GetRadioExtraInfo());
+        }
+
+        // display roaming info for radio interface
+        if ( helper.IsRoaming()) {
+            radioStatusText.append(", " +
+                    getResources().getString(R.string.roaming_active));
+        } else {
+            radioStatusText.append(", " + getResources().getString(R.string.roaming_not_active));
+        }
     }
 
     // Uses AsyncTask to create a task away from the main UI thread. This task takes a
