@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">URL Tester</string>
+    <string name="app_description">Enter a full URL below to begin test</string>
+    <string name="edit_message">Enter a message</string>
+    <string name="button_send">Send</string>
+    <string name="edit_url">URL</string>
+    <string name="button_go">Go</string>
+    <string name="button_try_another">Try another phrase</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_display_message">Here\'s your text</string>
+    <string name="title_activity_view_url">URL Test Results</string>
+    <string name="network_status_up">Network is up</string>
+    <string name="network_status_down">Network is down</string>
+    <string name="wifi_status_up">Wifi is connected</string>
+    <string name="wifi_status_down">Wifi is not connected</string>
+    <string name="radio_status_up">Radio is connected</string>
+    <string name="radio_status_down">Radio is not connected</string>
+    <string name="url_called">http://somedomain.com/a_page</string>
+    <string name="response_code">Request in progress...</string>
+    <string name="html_source">Response body will be shown here</string>
+
+</resources>
