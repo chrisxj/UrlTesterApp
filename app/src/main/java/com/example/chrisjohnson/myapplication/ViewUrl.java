@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import java.io.IOException;
 
@@ -21,6 +22,7 @@ public class ViewUrl extends Activity {
     private TextView radioStatusText;
     private TextView responseCodeText;
     private TextView htmlSource;
+    private ProgressBar spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class ViewUrl extends Activity {
         radioStatusText = (TextView) findViewById(R.id.radio_status);
         responseCodeText = (TextView) findViewById(R.id.response_code);
         htmlSource = (TextView) findViewById(R.id.html_source);
+        spinner = (ProgressBar) findViewById(R.id.view_url_spinner);
 
         //check the network is up, and then call URL
         ConnectivityManager connMgr = (ConnectivityManager)
@@ -104,6 +107,10 @@ public class ViewUrl extends Activity {
         protected void onPostExecute(String result) {
             htmlSource.setText("Response Body: \n" + result);
             responseCodeText.setText("Response Code: " + String.valueOf(download.getResponseCode()));
+
+            // hide the spinner and display the textView
+            spinner.setVisibility(View.INVISIBLE);
+            htmlSource.setVisibility(View.VISIBLE);
         }
     }
 
