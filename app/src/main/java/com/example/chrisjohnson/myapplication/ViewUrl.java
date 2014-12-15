@@ -105,7 +105,7 @@ public class ViewUrl extends Activity {
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            htmlSource.setText("Response Body: \n" + result);
+            htmlSource.setText(result);
             responseCodeText.setText("Response Code: " + String.valueOf(download.getResponseCode()));
 
             // hide the spinner and display the textView
