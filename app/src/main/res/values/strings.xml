@@ -23,8 +23,12 @@
     <string name="roaming_active">device is roaming</string>
     <string name="roaming_not_active">device not roaming</string>
     <string name="url_called">http://somedomain.com/a_page</string>
-    <string name="response_code">Request in progress...</string>
+    <string name="request_in_progress">Request in progress...</string>
+    <string name="response_code">Response code:</string>
     <string name="html_source">Response body will be shown here</string>
     <string name="html_source_title">Response Body:</string>
+    <string name="request_cancelled">Request cancelled</string>
+    <string name="no_source_available">Request was cancelled as no network interfaces are currently available. No HTML source returned.</string>
+    <string name="url_invalid">Unable to retrieve web page. URL may be invalid.</string>
 
 </resources>

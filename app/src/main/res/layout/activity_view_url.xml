@@ -51,7 +51,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/view_url_spinner"
-        android:layout_below="@id/html_source_title"/>
+        android:layout_below="@id/html_source_title"
+        android:visibility="invisible"/>
 
     <TextView
         android:id="@+id/html_source"
