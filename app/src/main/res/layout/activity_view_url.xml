@@ -9,12 +9,14 @@
     <TextView
         android:id="@+id/network_status"
         android:text="@string/network_status_down"
+        android:freezesText="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/wifi_status"
         android:text="@string/wifi_status_down"
+        android:freezesText="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/network_status"/>
@@ -22,6 +24,7 @@
     <TextView
         android:id="@+id/radio_status"
         android:text="@string/radio_status_down"
+        android:freezesText="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/wifi_status"/>
@@ -36,6 +39,7 @@
     <TextView
         android:id="@+id/response_code"
         android:text="@string/response_code"
+        android:freezesText="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/url_called"/>
@@ -43,6 +47,7 @@
     <TextView
         android:id="@+id/html_source_title"
         android:text="@string/html_source_title"
+        android:freezesText="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/response_code"/>
@@ -57,6 +62,7 @@
     <TextView
         android:id="@+id/html_source"
         android:text="@string/html_source"
+        android:freezesText="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/html_source_title"

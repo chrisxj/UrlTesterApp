@@ -23,16 +23,6 @@ public class ViewUrl extends Activity {
     private TextView responseCodeTextView;
     private TextView htmlSourceTextView;
     private ProgressBar progressBarView;
-    private String networkStatusTextValue = "";
-    private String wifiStatusTextValue = "";
-    private String radioStatusTextValue = "";
-    private String responseCodeTextValue = "";
-    private String htmlSourceTextValue = "";
-    private String NETWORK_STATUS_KEY = "networkStatus";
-    private String WIFI_STATUS_KEY = "wifiStatus";
-    private String RADIO_STATUS_KEY = "radioStatus";
-    private String RESPONSE_CODE_KEY = "responseCode";
-    private String HTML_SOURCE_KEY = "htmlSource";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,44 +48,12 @@ public class ViewUrl extends Activity {
         // if we have no saved instance state (i.e. view is being created for the first time)
         // perform the request and populate the view widgets with the results
         if ( savedInstanceState == null) {
-            // set default values for the status text vars
-            networkStatusTextValue = getResources().getString(R.string.network_status_down);
-            wifiStatusTextValue = getResources().getString(R.string.wifi_status_down);
-            radioStatusTextValue = getResources().getString(R.string.radio_status_down);
-            responseCodeTextValue = getResources().getString(R.string.request_in_progress);
-            htmlSourceTextValue = getResources().getString(R.string.html_source);
             // attempt the request
             performRequestAndStoreValues(url);
         } else {
-            // get values from saved instance state
-            networkStatusTextValue = savedInstanceState.getString(NETWORK_STATUS_KEY);
-            wifiStatusTextValue = savedInstanceState.getString(WIFI_STATUS_KEY);
-            radioStatusTextValue = savedInstanceState.getString(RADIO_STATUS_KEY);
-            responseCodeTextValue = savedInstanceState.getString(RESPONSE_CODE_KEY);
-            htmlSourceTextValue = savedInstanceState.getString(HTML_SOURCE_KEY);
-            // update the status TextView widgets
-            networkStatusTextView.setText(networkStatusTextValue);
-            wifiStatusTextView.setText(wifiStatusTextValue);
-            radioStatusTextView.setText(radioStatusTextValue);
-            responseCodeTextView.setText(responseCodeTextValue);
-            htmlSourceTextView.setText(htmlSourceTextValue);
             // show the htmlSource textView
             htmlSourceTextView.setVisibility(View.VISIBLE);
         }
-
-
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        // store the value of our random string for future use
-        savedInstanceState.putString(NETWORK_STATUS_KEY,networkStatusTextValue);
-        savedInstanceState.putString(WIFI_STATUS_KEY,wifiStatusTextValue);
-        savedInstanceState.putString(RADIO_STATUS_KEY,radioStatusTextValue);
-        savedInstanceState.putString(RESPONSE_CODE_KEY,responseCodeTextValue);
-        savedInstanceState.putString(HTML_SOURCE_KEY,htmlSourceTextValue);
-        // call the super equivalent
-        super.onSaveInstanceState(savedInstanceState);
     }
 
     private void performRequestAndStoreValues(String url) {
@@ -107,6 +65,11 @@ public class ViewUrl extends Activity {
         // the helper needs access to the ConnectivityManager class
         NetworkStatusHelper helper = new NetworkStatusHelper(connMgr);
 
+        // get the default values for the status fields, which assume status down
+        String networkStatusTextValue = getResources().getString(R.string.network_status_down);
+        String wifiStatusTextValue = getResources().getString(R.string.wifi_status_down);
+        String radioStatusTextValue = getResources().getString(R.string.radio_status_down);
+
         if ( helper.IsNetworkUp()) {
             networkStatusTextValue = getResources().getString(R.string.network_status_up);
             // set the spinner going, then perform the request
@@ -115,8 +78,8 @@ public class ViewUrl extends Activity {
             new DownloadWebpageTask().execute(url);
         } else {
             // update status fields with relevant info since network not available
-            responseCodeTextValue = getResources().getString(R.string.request_cancelled);
-            htmlSourceTextValue = getResources().getString(R.string.no_source_available);
+            String responseCodeTextValue = getResources().getString(R.string.request_cancelled);
+            String htmlSourceTextValue = getResources().getString(R.string.no_source_available);
             responseCodeTextView.setText(responseCodeTextValue);
             htmlSourceTextView.setText(htmlSourceTextValue);
             // show the htmlSource textView
@@ -177,12 +140,11 @@ public class ViewUrl extends Activity {
         @Override
         protected void onPostExecute(String result) {
             // set source and response code from the result of the request
-            htmlSourceTextValue = result;
-            responseCodeTextValue = getResources().getString(R.string.response_code)
+            String responseCodeTextValue = getResources().getString(R.string.response_code)
                     + " " + String.valueOf(download.getResponseCode());
 
             //update the text view widgets
-            htmlSourceTextView.setText(htmlSourceTextValue);
+            htmlSourceTextView.setText(result);
             responseCodeTextView.setText(responseCodeTextValue);
 
             // hide the spinner and display the textView
