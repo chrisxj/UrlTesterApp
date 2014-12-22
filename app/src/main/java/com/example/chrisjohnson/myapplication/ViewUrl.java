@@ -6,23 +6,23 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import java.io.IOException;
 
-
-
 public class ViewUrl extends Activity {
-    private TextView urlText;
+
+    private TextView urlTextView;
     private TextView networkStatusTextView;
     private TextView wifiStatusTextView;
     private TextView radioStatusTextView;
     private TextView responseCodeTextView;
-    private TextView htmlSourceTextView;
-    private ProgressBar progressBarView;
+    private TextView responseTimeTextView;
+    private String htmlSourceText;
+    private String responseHeadersText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,25 +34,21 @@ public class ViewUrl extends Activity {
         String url = intent.getStringExtra(MainActivity.EXTRA_URL);
 
         // get the text view and populate it with the message
-        urlText = (TextView) findViewById(R.id.url_called);
-        urlText.setText("URL Called: " + url);
+        urlTextView = (TextView) findViewById(R.id.url_called);
+        urlTextView.setText("URL Called: " + url);
 
         // populate the other textView widgets in local vars
         networkStatusTextView = (TextView) findViewById(R.id.network_status);
         wifiStatusTextView = (TextView) findViewById(R.id.wifi_status);
         radioStatusTextView = (TextView) findViewById(R.id.radio_status);
         responseCodeTextView = (TextView) findViewById(R.id.response_code);
-        htmlSourceTextView = (TextView) findViewById(R.id.html_source);
-        progressBarView = (ProgressBar) findViewById(R.id.view_url_spinner);
+        responseTimeTextView = (TextView) findViewById(R.id.response_time);
 
         // if we have no saved instance state (i.e. view is being created for the first time)
         // perform the request and populate the view widgets with the results
         if ( savedInstanceState == null) {
             // attempt the request
             performRequestAndStoreValues(url);
-        } else {
-            // show the htmlSource textView
-            htmlSourceTextView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -73,17 +69,19 @@ public class ViewUrl extends Activity {
         if ( helper.IsNetworkUp()) {
             networkStatusTextValue = getResources().getString(R.string.network_status_up);
             // set the spinner going, then perform the request
-            progressBarView.setVisibility(View.VISIBLE);
+            SpinnerFragment spinner = new SpinnerFragment();
+            getFragmentManager().beginTransaction().add(R.id.result_fragment, spinner).commit();
             // network is up, so call the URL via an async task
             new DownloadWebpageTask().execute(url);
         } else {
             // update status fields with relevant info since network not available
             String responseCodeTextValue = getResources().getString(R.string.request_cancelled);
-            String htmlSourceTextValue = getResources().getString(R.string.no_source_available);
             responseCodeTextView.setText(responseCodeTextValue);
-            htmlSourceTextView.setText(htmlSourceTextValue);
-            // show the htmlSource textView
-            htmlSourceTextView.setVisibility(View.VISIBLE);
+
+            // add the results tab fragment with the error message
+            htmlSourceText = getResources().getString(R.string.no_source_available);
+            ResultFragment fragment = ResultFragment.newInstance(htmlSourceText, ResultFragment.HTML_SOURCE);
+            getFragmentManager().beginTransaction().add(R.id.result_fragment, fragment).commit();
         }
 
         // show status for wifi and radio connectivity
@@ -131,7 +129,7 @@ public class ViewUrl extends Activity {
             // params comes from the execute() call: params[0] is the url.
             try {
                 download.requestUrl(urls[0]);
-                return download.getResponseBody();
+                return download.GetResponseBody();
             } catch (IOException e) {
                 return getResources().getString(R.string.url_invalid);
             }
@@ -141,22 +139,24 @@ public class ViewUrl extends Activity {
         protected void onPostExecute(String result) {
             // set source and response code from the result of the request
             String responseCodeTextValue = getResources().getString(R.string.response_code)
-                    + " " + String.valueOf(download.getResponseCode());
+                    + " " + String.valueOf(download.GetResponseCode());
+            String responseTimeTextValue = getResources().getString(R.string.response_time)
+                    + " " + String.valueOf(download.GetResponseTimeInMillis()) + "ms";
 
-            //update the text view widgets
-            htmlSourceTextView.setText(result);
+            // update the text view widgets in the main activity
             responseCodeTextView.setText(responseCodeTextValue);
+            responseTimeTextView.setText(responseTimeTextValue);
 
-            // hide the spinner and display the textView
-            progressBarView.setVisibility(View.INVISIBLE);
-            htmlSourceTextView.setVisibility(View.VISIBLE);
+            // store the resulting HTML and headers for later
+            htmlSourceText = result;
+            responseHeadersText = download.GetResponseHeadersText();
+
+            // display the result in the frag
+            replaceFragWithResultSource(htmlSourceText, ResultFragment.HTML_SOURCE);
         }
     }
 
-
-
-
-        @Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_view_url, menu);
@@ -176,5 +176,20 @@ public class ViewUrl extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onHtmlSourceTabClicked(View view) {
+        Log.d("FRAG", "ViewUrl.onHtmlSourceTabClicked Called");
+        replaceFragWithResultSource(htmlSourceText, ResultFragment.HTML_SOURCE);
+    }
+
+    public void onResponseHeadersTabClicked(View view) {
+        Log.d("FRAG", "ViewUrl.onResponseHeadersTabClicked Called");
+        replaceFragWithResultSource(responseHeadersText, ResultFragment.RESPONSE_HEADERS);
+    }
+
+    private void replaceFragWithResultSource(String html_source, String button_token) {
+        ResultFragment fragment = ResultFragment.newInstance(html_source, button_token);
+        getFragmentManager().beginTransaction().replace(R.id.result_fragment, fragment).commit();
     }
 }

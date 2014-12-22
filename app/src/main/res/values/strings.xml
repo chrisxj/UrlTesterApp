@@ -30,5 +30,10 @@
     <string name="request_cancelled">Request cancelled</string>
     <string name="no_source_available">Request was cancelled as no network interfaces are currently available. No HTML source returned.</string>
     <string name="url_invalid">Unable to retrieve web page. URL may be invalid.</string>
+    <string name="response_time">Response Time:</string>
+    <string name="button_tab_details">Details</string>
+    <string name="title_activity_test">TestActivity</string>
+    <string name="button_tab_source">HTML Source</string>
+    <string name="button_tab_response_headers">Response Headers</string>
 
 </resources>
